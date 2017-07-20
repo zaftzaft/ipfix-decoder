@@ -28,7 +28,10 @@ def main(raw):
         print("> Set", setid, setlen)
 
         if setid == 2:
-            while counter < setlen:
+            base = counter - 4
+            print(base, base + setlen)
+            while counter < base + setlen:
+                print(counter, base + setlen)
                 tempid, fldcount = struct.unpack(">HH", raw[counter:counter + 4])
                 counter += 4
                 print(">> Template", tempid, fldcount)
@@ -43,6 +46,11 @@ def main(raw):
                     if elmid & 0x8000:
                         enterprise = struct.unpack(">I", raw[counter:counter + 4])
                         counter += 4
+                        
+                        if not enterprise[0] in pen:
+                            hexdump(raw[counter - 12:counter + 12])
+                            return
+
                         print(">>> Enterprise", elmid, fldlen, pen[enterprise[0]])
                         template[tempid].append([elmid, fldlen, enterprise[0]])
                     else:
@@ -64,11 +72,16 @@ def main(raw):
                 print(">>> template no")
                 break
 
+        else:
+            print("[*] undefined setid")
+            break
 
 
 
-p = rdpcap("/home/kouta/Desktop/ipfix3.pcap")
+
+#p = rdpcap("/home/kouta/Desktop/ipfix3.pcap")
+p = rdpcap("/home/kouta/Desktop/IPFIX.pcap")
 
 
 main(bytes(p[0][Raw]))
-main(bytes(p[1][Raw]))
+#main(bytes(p[1][Raw]))
