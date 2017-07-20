@@ -62,8 +62,17 @@ class IPFIXDecoder(object):
                     self.decodeTemplate(tempid, fldcount)
 
             elif setid > 255:
-                print("dat")
-                pass
+                print(">> data")
+                if setid in self.template:
+                    print(">> template exists")
+                    for temp in self.template[setid]:
+                        name = element_id[temp[0]] if temp[0] in element_id  else temp[0]
+                        print(">>+", name, "[", temp[0], "]", temp[1], self.raw[self.counter:self.counter + temp[1]])
+                        self.counter += temp[1]
+                else:
+                    print(">> temp no")
+                break
+
             else:
                 print("[*] undefined setid")
                 break
@@ -95,14 +104,17 @@ class IPFIXDecoder(object):
 
 
 
-#p = rdpcap("/home/kouta/Desktop/ipfix3.pcap")
-p = rdpcap("/home/kouta/Desktop/IPFIX.pcap")
+p = rdpcap("/home/kouta/Desktop/ipfix3.pcap")
+#p = rdpcap("/home/kouta/Desktop/IPFIX.pcap")
 
 
 
 
 ipfix = IPFIXDecoder()
-ipfix.setRaw(bytes(p[0][Raw]))
-ipfix.decode()
+
+for i in range(0, 5):
+    ipfix.setRaw(bytes(p[i][Raw]))
+    ipfix.decode()
+
 
 
