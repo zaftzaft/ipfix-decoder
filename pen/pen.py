@@ -19,6 +19,7 @@ with open("enterprise-numbers", "r") as f:
 
         #num = int(f.readline())
         name = f.readline().strip()
+        name = name.replace(r'"', "").replace(r'`', "")
         f.readline()
         f.readline()
         print("{0}: \"{1}\",".format(num, name))
