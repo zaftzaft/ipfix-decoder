@@ -70,11 +70,13 @@ class IPFIXDecoder(object):
                     if not self.decode_data(setid):
                         break
 
-                #print(self.counter - base, setlen)
-                #break
 
             else:
-                hexdump(self.raw[self.counter - 100:self.counter ])
+                n = self.counter - 100
+                if n < 0:
+                    n = 0
+
+                hexdump(self.raw[n:self.counter ])
                 print("[*] undefined setid")
                 hexdump(self.raw[self.counter - 4:self.counter + 200])
                 break
