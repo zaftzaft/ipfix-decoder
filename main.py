@@ -21,6 +21,7 @@ class IPFIXDecoder(object):
 
 
     def setRaw(self, raw):
+        print("[***] set_raw")
         self.raw = raw
         self.counter = 0
 
@@ -65,12 +66,17 @@ class IPFIXDecoder(object):
             elif setid > 255:
                 base = self.counter - 4
                 print(">> data")
-                self.decode_data(setid)
+                while self.counter - base < setlen:
+                    if not self.decode_data(setid):
+                        break
+
+                #print(self.counter - base, setlen)
                 #break
 
             else:
+                hexdump(self.raw[self.counter - 100:self.counter ])
                 print("[*] undefined setid")
-                hexdump(self.raw[self.counter - 4:self.counter + 100])
+                hexdump(self.raw[self.counter - 4:self.counter + 200])
                 break
 
 
@@ -102,7 +108,7 @@ class IPFIXDecoder(object):
     def decode_data(self, template_id):
         if not template_id in self.template:
             print(">> template is not exists")
-            return
+            return False
 
         print(">> template exists")
 
@@ -148,6 +154,7 @@ class IPFIXDecoder(object):
                 self.counter += temp[1]
                 #print(self.counter, setlen, base)
         print(">> data END")
+        return True
 
 
 
@@ -159,7 +166,7 @@ p = rdpcap("/home/kouta/Desktop/ipfix3.pcap")
 
 ipfix = IPFIXDecoder()
 
-for i in range(0, 5):
+for i in range(0, 6):
     ipfix.setRaw(bytes(p[i][Raw]))
     ipfix.decode()
 
