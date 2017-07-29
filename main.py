@@ -68,7 +68,9 @@ class IPFIXDecoder(object):
                 print(">> data")
                 while self.counter - base < setlen:
                     if not self.decode_data(setid):
-                        break
+                        self.counter = base + setlen
+                        print(">>>>>> skip")
+                        #break
 
 
             else:
@@ -168,7 +170,7 @@ p = rdpcap("/home/kouta/Desktop/ipfix3.pcap")
 
 ipfix = IPFIXDecoder()
 
-for i in range(0, 6):
+for i in range(0, 10):
     ipfix.setRaw(bytes(p[i][Raw]))
     ipfix.decode()
 
